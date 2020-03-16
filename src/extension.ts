@@ -13,14 +13,14 @@ import * as Net from 'net';
  * The compile time flag 'runMode' controls how the debug adapter is run.
  * Please note: the test suite only supports 'external' mode.
  */
-const runMode: 'external' | 'server' | 'inline' = 'inline';
+const runMode: 'external' | 'server' | 'inline' = 'server';
 
 export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(vscode.commands.registerCommand('extension.mock-debug.getProgramName', config => {
 		return vscode.window.showInputBox({
-			placeHolder: "Please enter the name of a markdown file in the workspace folder",
-			value: "readme.md"
+			placeHolder: "Please enter the name of an xsl file in the workspace folder",
+			value: "transform.xsl"
 		});
 	}));
 
@@ -78,7 +78,7 @@ class MockConfigurationProvider implements vscode.DebugConfigurationProvider {
 		// if launch.json is missing or empty
 		if (!config.type && !config.request && !config.name) {
 			const editor = vscode.window.activeTextEditor;
-			if (editor && editor.document.languageId === 'markdown') {
+			if (editor && editor.document.languageId === 'xsl') {
 				config.type = 'mock';
 				config.name = 'Launch';
 				config.request = 'launch';
@@ -130,17 +130,20 @@ class MockDebugAdapterDescriptorFactory implements vscode.DebugAdapterDescriptor
 
 	createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable | undefined): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
 
-		if (!this.server) {
-			// start listening on a random port
-			this.server = Net.createServer(socket => {
-				const session = new MockDebugSession();
-				session.setRunAsServer(true);
-				session.start(<NodeJS.ReadableStream>socket, socket);
-			}).listen(0);
-		}
+		// if (!this.server) {
+		// 	// start listening on a random port
+		// 	this.server = Net.createServer(socket => {
+		// 		const session = new MockDebugSession();
+		// 		session.setRunAsServer(true);
+		// 		session.start(<NodeJS.ReadableStream>socket, socket);
+		// 	}).listen(0);
+		// }
+
+		// // make VS Code connect to debug server
+		// return new vscode.DebugAdapterServer((<Net.AddressInfo>this.server.address()).port);
 
 		// make VS Code connect to debug server
-		return new vscode.DebugAdapterServer((<Net.AddressInfo>this.server.address()).port);
+		return new vscode.DebugAdapterServer(8080);
 	}
 
 	dispose() {

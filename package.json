@@ -58,7 +58,7 @@
 	"contributes": {
 		"breakpoints": [
 			{
-				"language": "markdown"
+				"language": "xsl"
 			}
 		],
 		"debuggers": [

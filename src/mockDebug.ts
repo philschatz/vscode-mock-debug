@@ -57,7 +57,7 @@ export class MockDebugSession extends LoggingDebugSession {
 	 * We configure the default implementation of a debug adapter here.
 	 */
 	public constructor() {
-		super("mock-debug.txt");
+		super();
 
 		// this debugger uses zero-based lines and columns
 		this.setDebuggerLinesStartAt1(false);
