@@ -8,7 +8,7 @@ This is **alpha**.
 ## Steps to run
 
 1. Run `npm install` in this repo
-1. Start up [xslt-debug](https://github.com/philschatz/xslt-debug) in a terminal (it uses :8080)
+1. Run [./build.bash](./build.bash) to make sure the XSLT jar is available
 1. Open up the repo in VSCode and press <kbd>F5</kbd> to start a development instance of VSCode
 1. Open a directory in the dev VSCode with an XSLT file and an input XML file
 1. Create a launch config that has this in it:

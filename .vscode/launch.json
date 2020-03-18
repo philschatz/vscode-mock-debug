@@ -15,6 +15,13 @@
 			"preLaunchTask": "npm: watch"
 		},
 		{
+			"type": "java",
+			"name": "Debug (Attach) - Remote (to the XSLT Server)",
+			"request": "attach",
+			"hostName": "127.0.0.1",
+			"port": 8888
+		},
+		{
 			"name": "Server",
 			"type": "node",
 			"request": "launch",

@@ -8,6 +8,7 @@ import * as vscode from 'vscode';
 import { WorkspaceFolder, DebugConfiguration, ProviderResult, CancellationToken } from 'vscode';
 import { MockDebugSession } from './mockDebug';
 import * as Net from 'net';
+import { launchServer } from './launchServer';
 
 /*
  * The compile time flag 'runMode' controls how the debug adapter is run.
@@ -143,7 +144,8 @@ class MockDebugAdapterDescriptorFactory implements vscode.DebugAdapterDescriptor
 		// return new vscode.DebugAdapterServer((<Net.AddressInfo>this.server.address()).port);
 
 		// make VS Code connect to debug server
-		return new vscode.DebugAdapterServer(8080);
+		const port = launchServer();
+		return new vscode.DebugAdapterServer(port);
 	}
 
 	dispose() {
