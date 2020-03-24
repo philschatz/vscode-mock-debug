@@ -1,12 +1,12 @@
 {
-	"name": "mock-debug",
-	"displayName": "Mock Debug",
-	"version": "0.37.0",
-	"publisher": "andreweinand",
-	"description": "Starter extension for developing debug adapters for VS Code.",
+	"name": "xslt-debug",
+	"displayName": "XSLT Debug",
+	"version": "1.0.0",
+	"publisher": "philschatz",
+	"description": "An XSLT Debugger for VS Code.",
 	"author": {
-		"name": "Microsoft Corporation",
-		"email": "aweinand@microsoft.com"
+		"name": "Philip Schatz",
+		"email": "me@philschatz.com"
 	},
 	"license": "MIT",
 	"keywords": [
@@ -53,7 +53,7 @@
 	"main": "./out/extension",
 	"activationEvents": [
 		"onDebug",
-		"onCommand:extension.mock-debug.getProgramName"
+		"onCommand:extension.xslt-debug.getProgramName"
 	],
 	"contributes": {
 		"breakpoints": [
@@ -63,8 +63,8 @@
 		],
 		"debuggers": [
 			{
-				"type": "mock",
-				"label": "Mock Debug",
+				"type": "xslt",
+				"label": "XSLT Debug",
 				"program": "./out/debugAdapter.js",
 				"runtime": "node",
 				"configurationAttributes": {
@@ -93,7 +93,7 @@
 				},
 				"initialConfigurations": [
 					{
-						"type": "mock",
+						"type": "xslt",
 						"request": "launch",
 						"name": "Ask for file name",
 						"program": "${workspaceFolder}/${command:AskForProgramName}",
@@ -105,7 +105,7 @@
 						"label": "Mock Debug: Launch",
 						"description": "A new configuration for 'debugging' a user selected markdown file.",
 						"body": {
-							"type": "mock",
+							"type": "xslt",
 							"request": "launch",
 							"name": "Ask for file name",
 							"program": "^\"\\${workspaceFolder}/\\${command:AskForProgramName}\"",
@@ -114,7 +114,7 @@
 					}
 				],
 				"variables": {
-					"AskForProgramName": "extension.mock-debug.getProgramName"
+					"AskForProgramName": "extension.xslt-debug.getProgramName"
 				}
 			}
 		]

@@ -53,7 +53,7 @@
 		},
 		{
 			"name": "Mock Sample",
-			"type": "mock",
+			"type": "xslt",
 			"request": "launch",
 			"program": "${workspaceFolder}/${command:AskForProgramName}",
 			"stopOnEntry": true

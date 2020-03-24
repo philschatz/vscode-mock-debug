@@ -17,7 +17,7 @@ This is **alpha**.
 {
   "configurations": [
     {
-      "type": "mock",
+      "type": "xslt",
       "request": "launch",
       "name": "Debug XSLT Files",
       "program": "${workspaceFolder}",

@@ -18,16 +18,16 @@ const runMode: 'external' | 'server' | 'inline' = 'server';
 
 export function activate(context: vscode.ExtensionContext) {
 
-	context.subscriptions.push(vscode.commands.registerCommand('extension.mock-debug.getProgramName', config => {
+	context.subscriptions.push(vscode.commands.registerCommand('extension.xslt-debug.getProgramName', config => {
 		return vscode.window.showInputBox({
 			placeHolder: "Please enter the name of an xsl file in the workspace folder",
 			value: "transform.xsl"
 		});
 	}));
 
-	// register a configuration provider for 'mock' debug type
+	// register a configuration provider for 'xslt' debug type
 	const provider = new MockConfigurationProvider();
-	context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('mock', provider));
+	context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('xslt', provider));
 
 	// debug adapters can be run in different ways by using a vscode.DebugAdapterDescriptorFactory:
 	let factory: vscode.DebugAdapterDescriptorFactory;
@@ -48,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
 			break;
 		}
 
-	context.subscriptions.push(vscode.debug.registerDebugAdapterDescriptorFactory('mock', factory));
+	context.subscriptions.push(vscode.debug.registerDebugAdapterDescriptorFactory('xslt', factory));
 	if ('dispose' in factory) {
 		context.subscriptions.push(factory);
 	}
@@ -80,7 +80,7 @@ class MockConfigurationProvider implements vscode.DebugConfigurationProvider {
 		if (!config.type && !config.request && !config.name) {
 			const editor = vscode.window.activeTextEditor;
 			if (editor && editor.document.languageId === 'xsl') {
-				config.type = 'mock';
+				config.type = 'xslt';
 				config.name = 'Launch';
 				config.request = 'launch';
 				config.program = '${file}';
