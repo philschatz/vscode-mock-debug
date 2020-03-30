@@ -4,17 +4,9 @@
 
 'use strict';
 
+import * as path from 'path';
 import * as vscode from 'vscode';
 import { WorkspaceFolder, DebugConfiguration, ProviderResult, CancellationToken } from 'vscode';
-import { MockDebugSession } from './mockDebug';
-import * as Net from 'net';
-import { launchServer } from './launchServer';
-
-/*
- * The compile time flag 'runMode' controls how the debug adapter is run.
- * Please note: the test suite only supports 'external' mode.
- */
-const runMode: 'external' | 'server' | 'inline' = 'server';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -29,24 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 	const provider = new MockConfigurationProvider();
 	context.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('xslt', provider));
 
-	// debug adapters can be run in different ways by using a vscode.DebugAdapterDescriptorFactory:
-	let factory: vscode.DebugAdapterDescriptorFactory;
-	switch (runMode) {
-		case 'server':
-			// run the debug adapter as a server inside the extension and communicating via a socket
-			factory = new MockDebugAdapterDescriptorFactory();
-			break;
-
-		case 'inline':
-			// run the debug adapter inside the extension and directly talk to it
-			factory = new InlineDebugAdapterFactory();
-			break;
-
-		case 'external': default:
-			// run the debug adapter as a separate process
-			factory = new DebugAdapterExecutableFactory();
-			break;
-		}
+	let factory = new DebugAdapterExecutableFactory();
 
 	context.subscriptions.push(vscode.debug.registerDebugAdapterDescriptorFactory('xslt', factory));
 	if ('dispose' in factory) {
@@ -100,64 +75,22 @@ class MockConfigurationProvider implements vscode.DebugConfigurationProvider {
 
 class DebugAdapterExecutableFactory implements vscode.DebugAdapterDescriptorFactory {
 
-	// The following use of a DebugAdapter factory shows how to control what debug adapter executable is used.
-	// Since the code implements the default behavior, it is absolutely not neccessary and we show it here only for educational purpose.
-
 	createDebugAdapterDescriptor(_session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable | undefined): ProviderResult<vscode.DebugAdapterDescriptor> {
-		// param "executable" contains the executable optionally specified in the package.json (if any)
-
 		// use the executable specified in the package.json if it exists or determine it based on some other information (e.g. the session)
 		if (!executable) {
-			const command = "absolute path to my DA executable";
+			const command = 'java';
+			// const debuggerArg = [
+			// 	'-agentlib:jdwp=transport=dt_socket,address=127.0.0.1:8888,server=y,suspend=n'
+			// ]
 			const args = [
-				"some args",
-				"another arg"
+				// ...debuggerArg,
+				'-jar',
+				path.join(__dirname, '..', 'server', `xslt-debug-adapter-0.1.1-all.jar`)
 			];
-			const options = {
-				cwd: "working directory for executable",
-				env: { "VAR": "some value" }
-			};
-			executable = new vscode.DebugAdapterExecutable(command, args, options);
+			executable = new vscode.DebugAdapterExecutable(command, args);
 		}
 
 		// make VS Code launch the DA executable
 		return executable;
-	}
-}
-
-class MockDebugAdapterDescriptorFactory implements vscode.DebugAdapterDescriptorFactory {
-
-	private server?: Net.Server;
-
-	createDebugAdapterDescriptor(session: vscode.DebugSession, executable: vscode.DebugAdapterExecutable | undefined): vscode.ProviderResult<vscode.DebugAdapterDescriptor> {
-
-		// if (!this.server) {
-		// 	// start listening on a random port
-		// 	this.server = Net.createServer(socket => {
-		// 		const session = new MockDebugSession();
-		// 		session.setRunAsServer(true);
-		// 		session.start(<NodeJS.ReadableStream>socket, socket);
-		// 	}).listen(0);
-		// }
-
-		// // make VS Code connect to debug server
-		// return new vscode.DebugAdapterServer((<Net.AddressInfo>this.server.address()).port);
-
-		// make VS Code connect to debug server
-		const port = launchServer();
-		return new vscode.DebugAdapterServer(port);
-	}
-
-	dispose() {
-		if (this.server) {
-			this.server.close();
-		}
-	}
-}
-
-class InlineDebugAdapterFactory implements vscode.DebugAdapterDescriptorFactory {
-
-	createDebugAdapterDescriptor(_session: vscode.DebugSession): ProviderResult<vscode.DebugAdapterDescriptor> {
-		return new vscode.DebugAdapterInlineImplementation(new MockDebugSession());
 	}
 }
